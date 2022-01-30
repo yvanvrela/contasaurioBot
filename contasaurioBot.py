@@ -3,6 +3,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from config import allconfig
 
+
 # Iniciar Loggin
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -28,7 +29,9 @@ def echo(update, context):
     # Busca una palabra clave, y responde con un mensaje
     update.message.reply_text("Entre en /ayuda para saber que hacer.")
 
-# 
+#
+
+
 def menuSettings(update, context):
     update.message.reply_text("Entre en /ayuda para saber que hacer.")
 
