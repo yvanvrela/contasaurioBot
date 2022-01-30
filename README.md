@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Bot de Telegra m para controlar la recepción de documentos, control de timbrados, color de carpetas y más cosas.
+Bot de Telegram para controlar la recepción de documentos, control de timbrados, color de carpetas y más cosas.
 
 Contasario va ser capaz de guardar los mensajes de recepcion de los documentos en un excel, los guardará por:
 
