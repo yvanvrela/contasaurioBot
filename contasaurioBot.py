@@ -30,21 +30,22 @@ def echo(update, context):
     update.message.reply_text("Entre en /ayuda para saber que hacer.")
 
 
+
 # Iniciar al Menú Principal
 def menu(bot, update):
-  bot.message.reply_text(main_menu_message(),
-                         reply_markup=main_menu_keyboard())
+  bot.message.reply_text(mainMenuMessage(),
+                         reply_markup=mainMenuKeyboard())
 
 
 # Menus del bot
-def main_menu(bot, update):
-    bot.callback_query.message.edit_text(main_menu_message(),
-                                         reply_markup=main_menu_keyboard())
+def mainMenu(bot, update):
+    bot.callback_query.message.edit_text(mainMenuMessage(),
+                                         reply_markup=mainMenuKeyboard())
 
 
-def first_menu(bot, update):
-    bot.callback_query.message.edit_text(first_menu_message(),
-                                         reply_markup=first_menu_keyboard())
+def clientConfigMenu(bot, update):
+    bot.callback_query.message.edit_text(clientConfigMessage(),
+                                         reply_markup=clientConfigKeyboard())
 
 
 def second_menu(bot, update):
@@ -52,7 +53,7 @@ def second_menu(bot, update):
                                          reply_markup=second_menu_keyboard())
 
 
-def first_submenu(bot, update):
+def clientConfigSubmenu(bot, update):
     pass
 
 
@@ -65,20 +66,22 @@ def error(update, context):
 
 
 # Keyboardas - Menu de menues
-def main_menu_keyboard():
-    keyboard = [[InlineKeyboardButton('Configuración de Clientes', callback_data='m1')],
+def mainMenuKeyboard():
+    keyboard = [[InlineKeyboardButton('Configuración de Clientes', callback_data='clientConfigMenu')],
                 [InlineKeyboardButton('Eliminar Cliente', callback_data='m2')],
                 [InlineKeyboardButton('Opcion 3', callback_data='m3')]]
     return InlineKeyboardMarkup(keyboard)
 
 
-def first_menu_keyboard():
-    keyboard = [[InlineKeyboardButton('Nombre', callback_data='m1_1')],
-                [InlineKeyboardButton('Timbrado', callback_data='m1_2')],
+def clientConfigKeyboard():
+    keyboard = [[InlineKeyboardButton('Nombre', callback_data='clientName')],
+                [InlineKeyboardButton('Timbrado', callback_data='clientTimbrado')],
                 [InlineKeyboardButton(
-                    'Color de la Carpeta', callback_data='m1_3')],
+                    'Color de la Carpeta', callback_data='clientColorFolder')],
                 [InlineKeyboardButton('Atras', callback_data='main')]]
+     # escuchando la eleccion
     return InlineKeyboardMarkup(keyboard)
+
 
 
 def second_menu_keyboard():
@@ -89,17 +92,27 @@ def second_menu_keyboard():
 
 
 # Mensajes de los menus
-def main_menu_message():
+def mainMenuMessage():
     return 'Opciones:'
 
 
-def first_menu_message():
+def clientConfigMessage():
     return 'Editar Clientes:'
 
 
 def second_menu_message():
     return 'Choose the submenu in second menu:'
 
+# TODO: hacer que direccione a su duncion correspondiente /cambiarNombre, y espere una respuesta y luego ejecute el cambio
+def responseOption(update, context):
+    query = update.callback_query
+    # CallbackQueries necesita una respuesta para seguir
+    query.answer()
+    if query.data == 'clientName':
+        query.edit_message_text(
+        text="Ok. Enviame el nuevo nombre:")
+    
+    
 
 def main():
     """Inicia el bot con un TOKEN"""
@@ -117,12 +130,15 @@ def main():
     dp.add_handler(MessageHandler(Filters.text, echo))
 
     # Handlers del Menu
-    updater.dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(first_menu, pattern='m1'))
+    updater.dispatcher.add_handler(CallbackQueryHandler(mainMenu, pattern='main'))
+    updater.dispatcher.add_handler(CallbackQueryHandler(clientConfigMenu, pattern='clientConfigMenu'))
     updater.dispatcher.add_handler(CallbackQueryHandler(second_menu, pattern='m2'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu, pattern='m1_1'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu, pattern='m1_2'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(first_submenu, pattern='m1_3'))
+    # updater.dispatcher.add_handler(CallbackQueryHandler(clientConfigSubmenu, pattern='clientName'))
+    # updater.dispatcher.add_handler(CallbackQueryHandler(clientConfigSubmenu, pattern='clientTimbrado'))
+    # updater.dispatcher.add_handler(CallbackQueryHandler(clientConfigSubmenu, pattern='clientColorFolder'))
+
+    updater.dispatcher.add_handler(CallbackQueryHandler(responseOption))
+
     updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_1'))
     updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_2'))
     updater.dispatcher.add_error_handler(error)
