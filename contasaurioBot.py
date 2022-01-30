@@ -3,6 +3,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from config import allconfig
 
+
 # Iniciar Loggin
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -17,7 +18,7 @@ def start(update, context):
         'Que tengo que hacer? vea /ayuda para ver la lsita de mis funciones.')
 
 
-# funcion para explicar los comandos
+# funcion para explicar los comandos, lista de opciones
 def help_command(update, context):
     """Lista de Funciones"""
     update.message.reply_text(
@@ -26,9 +27,13 @@ def help_command(update, context):
 
 def echo(update, context):
     # Busca una palabra clave, y responde con un mensaje
-        update.message.reply_text("Entre en /ayuda para saber que hacer.")
+    update.message.reply_text("Entre en /ayuda para saber que hacer.")
+
+#
 
 
+def menuSettings(update, context):
+    update.message.reply_text("Entre en /ayuda para saber que hacer.")
 
 
 def main():
@@ -43,7 +48,6 @@ def main():
     dp.add_handler(CommandHandler("ayuda", help_command))
 
     dp.add_handler(MessageHandler(Filters.text, echo))
-
 
     # Start the Bot
     updater.start_polling()
