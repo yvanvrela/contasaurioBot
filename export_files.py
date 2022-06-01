@@ -62,8 +62,8 @@ def xls_to_txt():
                 # Rename the file
                 os.rename(old_name, new_name)
 
-        print('Convirtiendo los archivos xls a txt...')
-        print('\n')
+        # print('Convirtiendo los archivos xls a txt...')
+        # print('\n')
     else:
         print('No hay archivos para convertir')
 
@@ -76,11 +76,14 @@ def format_line_text(text: str) -> list:
 
     ruc = document[2]
 
-    format_ruc = re.findall('0*([0-9]+)', ruc)
+    if ruc.strip() != 'X':
+        format_ruc = re.findall('0*([0-9]+)', ruc)
 
-    document[2] = format_ruc[0]
+        document[2] = format_ruc[0]
 
-    return document
+        return document
+    else:
+        return document
 
 
 def read_file(path: str) -> list:
@@ -122,38 +125,3 @@ def delete_file(path: str) -> None:
         os.remove(path)
     else:
         print("El archivo no existe!")
-
-
-# def main() -> None:
-
-#     xls_to_txt()
-
-#     files = scan_files()
-
-#     if files:
-#         print('\n')
-
-#         for file in files:
-
-#             print('Formateando el archivo: ', file)
-
-#             file_content = read_file(file)
-
-#             write_file(file_content, path=file)
-
-#             print('Exportando a zip: ', file)
-#             to_zip(file)
-
-#             print('\n')
-
-#             print('Eliminando archivos txt...')
-#             delete_file(file)
-
-#             print('Exportacion exitosa!!')
-#     else:
-#         print('\n')
-#         print('No hay archivos nuevos...')
-
-
-# if __name__ == '__main__':
-#     main()

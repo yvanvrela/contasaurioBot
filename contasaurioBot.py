@@ -36,7 +36,7 @@ def export_files(update, context):
 
     chat_id = update.message.chat_id
 
-    context.bot.send_message(chat_id=chat_id, text='Exportando archivos...')
+    context.bot.send_message(chat_id=chat_id, text='Buscando archivos... 🔍')
 
     xls_to_txt()
 
@@ -45,13 +45,17 @@ def export_files(update, context):
     if files:
 
         context.bot.send_message(
-            chat_id=chat_id, text='Encontré estos archivos: ')
+            chat_id=chat_id, text='Encontré estos archivos 📁')
 
+        list_files = ''
         for file in files:
             file_name = re.findall('\w+.txt', file)
             name = file_name[0]
-            context.bot.send_message(
-                chat_id=chat_id, text=name.replace('.txt', '.xls'))
+
+            list_files += name.replace('.txt', '.xls') + '\n'
+
+        context.bot.send_message(
+            chat_id=chat_id, text=list_files)
 
         for file in files:
 
@@ -64,11 +68,13 @@ def export_files(update, context):
             delete_file(file)
 
         context.bot.send_message(
-            chat_id=chat_id, text='Formateando los archivos y exportando a zip...')
+            chat_id=chat_id, text='Formateando y exportando a zip ⚙️🔩🔧')
 
         context.bot.send_message(
-            chat_id=chat_id, text='Lestoo, yia terminé :)')
+            chat_id=chat_id, text='Limpiando archivos innecesarios 🧹🧹')
 
+        context.bot.send_message(
+            chat_id=chat_id, text='Listo 🦖')
     else:
         context.bot.send_message(
             chat_id=chat_id, text='No hay archivos nuevos :(')
@@ -173,7 +179,7 @@ def main():
     dp.add_handler(CommandHandler('menu', menu))
     dp.add_handler(CommandHandler('export', export_files))
 
-    dp.add_handler(MessageHandler(Filters.text, echo))
+    # dp.add_handler(MessageHandler(Filters.text, echo))
 
     # Handlers del Menu
     updater.dispatcher.add_handler(
