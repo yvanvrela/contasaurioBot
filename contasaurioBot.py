@@ -22,7 +22,7 @@ def start(update, context):
 def help_command(update, context):
     """Lista de Funciones"""
     update.message.reply_text(
-        'Funciones para el control de los Clientes. \n\n /nuevocliente - agregar cliente \n /listaclientes - ver todos los clientes \n\n Configuración de Clientes \n /agregartimbrado - agregar un nuevo timbrado \n /recepciondocumentos - resive los documentos \n /retirodocumentos - nose \n /colorcarpeta - agregar el color \n\n Falta más funciones, pero aprendo rápido.')
+        'Funciones para el control de los Clientes. \n\n /nuevocliente - agregar cliente \n /listaclientes - ver todos los clientes \n\n Configuración de Clientes \n /agregartimbrado - agregar un nuevo timbrado \n /recepciondocumentos - resive los documentos \n /retirodocumentos - nose \n /colorcarpeta - agregar el color \n /export - exportar archivos de la R-90 \n\n Falta más funciones, pero aprendo rápido.')
 
 
 def echo(update, context):
@@ -30,11 +30,16 @@ def echo(update, context):
     update.message.reply_text("Entre en /ayuda para saber que hacer.")
 
 
+def export_files(bot, context):
+    bot.message.reply_text("Exportando archivos...")
+    
 
 # Iniciar al Menú Principal
+
+
 def menu(bot, update):
-  bot.message.reply_text(mainMenuMessage(),
-                         reply_markup=mainMenuKeyboard())
+    bot.message.reply_text(mainMenuMessage(),
+                           reply_markup=mainMenuKeyboard())
 
 
 # Menus del bot
@@ -75,13 +80,13 @@ def mainMenuKeyboard():
 
 def clientConfigKeyboard():
     keyboard = [[InlineKeyboardButton('Nombre', callback_data='clientName')],
-                [InlineKeyboardButton('Timbrado', callback_data='clientTimbrado')],
+                [InlineKeyboardButton(
+                    'Timbrado', callback_data='clientTimbrado')],
                 [InlineKeyboardButton(
                     'Color de la Carpeta', callback_data='clientColorFolder')],
                 [InlineKeyboardButton('Atras', callback_data='main')]]
-     # escuchando la eleccion
+    # escuchando la eleccion
     return InlineKeyboardMarkup(keyboard)
-
 
 
 def second_menu_keyboard():
@@ -104,15 +109,16 @@ def second_menu_message():
     return 'Choose the submenu in second menu:'
 
 # TODO: hacer que direccione a su duncion correspondiente /cambiarNombre, y espere una respuesta y luego ejecute el cambio
+
+
 def responseOption(update, context):
     query = update.callback_query
     # CallbackQueries necesita una respuesta para seguir
     query.answer()
     if query.data == 'clientName':
         query.edit_message_text(
-        text="Ok. Enviame el nuevo nombre:")
-    
-    
+            text="Ok. Enviame el nuevo nombre:")
+
 
 def main():
     """Inicia el bot con un TOKEN"""
@@ -126,23 +132,28 @@ def main():
     dp.add_handler(CommandHandler('ayuda', help_command))
 
     dp.add_handler(CommandHandler('menu', menu))
+    dp.add_handler(CommandHandler('export', export_files))
 
     dp.add_handler(MessageHandler(Filters.text, echo))
 
     # Handlers del Menu
-    updater.dispatcher.add_handler(CallbackQueryHandler(mainMenu, pattern='main'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(clientConfigMenu, pattern='clientConfigMenu'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(second_menu, pattern='m2'))
+    updater.dispatcher.add_handler(
+        CallbackQueryHandler(mainMenu, pattern='main'))
+    updater.dispatcher.add_handler(CallbackQueryHandler(
+        clientConfigMenu, pattern='clientConfigMenu'))
+    updater.dispatcher.add_handler(
+        CallbackQueryHandler(second_menu, pattern='m2'))
     # updater.dispatcher.add_handler(CallbackQueryHandler(clientConfigSubmenu, pattern='clientName'))
     # updater.dispatcher.add_handler(CallbackQueryHandler(clientConfigSubmenu, pattern='clientTimbrado'))
     # updater.dispatcher.add_handler(CallbackQueryHandler(clientConfigSubmenu, pattern='clientColorFolder'))
 
     updater.dispatcher.add_handler(CallbackQueryHandler(responseOption))
 
-    updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_1'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(second_submenu, pattern='m2_2'))
+    updater.dispatcher.add_handler(
+        CallbackQueryHandler(second_submenu, pattern='m2_1'))
+    updater.dispatcher.add_handler(
+        CallbackQueryHandler(second_submenu, pattern='m2_2'))
     updater.dispatcher.add_error_handler(error)
-
 
     # Start the Bot
     updater.start_polling()
