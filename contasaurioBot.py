@@ -1,7 +1,9 @@
 import logging
+import re
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from config import allconfig
+from export_files import xls_to_txt, scan_files, read_file, write_file, to_zip, delete_file
 
 
 # Iniciar Loggin
@@ -30,9 +32,46 @@ def echo(update, context):
     update.message.reply_text("Entre en /ayuda para saber que hacer.")
 
 
-def export_files(bot, context):
-    bot.message.reply_text("Exportando archivos...")
-    
+def export_files(update, context):
+
+    chat_id = update.message.chat_id
+
+    context.bot.send_message(chat_id=chat_id, text='Exportando archivos...')
+
+    xls_to_txt()
+
+    files = scan_files()
+
+    if files:
+
+        context.bot.send_message(
+            chat_id=chat_id, text='Encontré estos archivos: ')
+
+        for file in files:
+            file_name = re.findall('\w+.txt', file)
+            name = file_name[0]
+            context.bot.send_message(
+                chat_id=chat_id, text=name.replace('.txt', '.xls'))
+
+        for file in files:
+
+            file_content = read_file(file)
+
+            write_file(file_content, path=file)
+
+            to_zip(file)
+
+            delete_file(file)
+
+        context.bot.send_message(
+            chat_id=chat_id, text='Formateando los archivos y exportando a zip...')
+
+        context.bot.send_message(
+            chat_id=chat_id, text='Lestoo, yia terminé :)')
+
+    else:
+        context.bot.send_message(
+            chat_id=chat_id, text='No hay archivos nuevos :(')
 
 # Iniciar al Menú Principal
 
