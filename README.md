@@ -32,3 +32,5 @@ Contasario va ser capaz de guardar los mensajes de recepcion de los documentos e
     - /retirodocumentos
         - obs
 - /colorcarpeta
+-/export
+    -Formatea y exporta en zip los archivos para la R-90
