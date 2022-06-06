@@ -32,7 +32,7 @@ def echo(update, context):
     update.message.reply_text("Entre en /ayuda para saber que hacer.")
 
 
-def export_files(update, context):
+def export_files_r90(update, context):
 
     chat_id = update.message.chat_id
 
@@ -47,15 +47,15 @@ def export_files(update, context):
         context.bot.send_message(
             chat_id=chat_id, text='Encontré estos archivos 📁')
 
-        list_files = ''
+        files_name = ''
         for file in files:
             file_name = re.findall('\w+.txt', file)
             name = file_name[0]
 
-            list_files += name.replace('.txt', '.xls') + '\n'
+            files_name += name.replace('.txt', '.xls') + '\n'
 
         context.bot.send_message(
-            chat_id=chat_id, text=list_files)
+            chat_id=chat_id, text=files_name)
 
         for file in files:
 
@@ -118,8 +118,7 @@ def error(update, context):
 # Keyboardas - Menu de menues
 def mainMenuKeyboard():
     keyboard = [[InlineKeyboardButton('Configuración de Clientes', callback_data='clientConfigMenu')],
-                [InlineKeyboardButton('Eliminar Cliente', callback_data='m2')],
-                [InlineKeyboardButton('Opcion 3', callback_data='m3')]]
+                [InlineKeyboardButton('Eliminar Cliente', callback_data='m2')]]
     return InlineKeyboardMarkup(keyboard)
 
 
@@ -177,7 +176,7 @@ def main():
     dp.add_handler(CommandHandler('ayuda', help_command))
 
     dp.add_handler(CommandHandler('menu', menu))
-    dp.add_handler(CommandHandler('export', export_files))
+    dp.add_handler(CommandHandler('export', export_files_r90))
 
     # dp.add_handler(MessageHandler(Filters.text, echo))
 
