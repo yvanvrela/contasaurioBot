@@ -75,7 +75,7 @@ def export_files_r90(update, context):
             delete_file(file)
 
         context.bot.send_message(
-            chat_id=chat_id, text='Ya los exporté a zip, listos para enviar 🦖')
+            chat_id=chat_id, text='Exportados a zip, listos para enviar 🦖')
 
     else:
         context.bot.send_message(

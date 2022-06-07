@@ -96,6 +96,9 @@ def read_file(path: str) -> list:
 
             for line in f:
 
+                if not line.strip():
+                    continue
+                
                 document = format_line_text(line)
 
                 details_document = ''
