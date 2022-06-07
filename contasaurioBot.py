@@ -1,9 +1,10 @@
 import logging
 import re
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, ContextTypes, ConversationHandler, filters
 from config import allconfig
 from export_files import xls_to_txt, scan_files, read_file, write_file, to_zip, delete_file
+from search_identity import search_identity_number
 
 
 # Iniciar Loggin
@@ -12,6 +13,9 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # funcion para enviar el primer mensaje luego del /start
+
+
+IDENTITY = 1
 
 
 def start(update, context):
@@ -27,7 +31,7 @@ def help_command(update, context):
         'Funciones para el control de los Clientes. \n\n /nuevocliente - agregar cliente \n /listaclientes - ver todos los clientes \n\n Configuración de Clientes \n /agregartimbrado - agregar un nuevo timbrado \n /recepciondocumentos - resive los documentos \n /retirodocumentos - nose \n /colorcarpeta - agregar el color \n /export - exportar archivos de la R-90 \n\n Falta más funciones, pero aprendo rápido.')
 
 
-def echo(update, context):
+def echo(update: Update, context):
     # Busca una palabra clave, y responde con un mensaje
     chat_id = update.message.chat_id
     message = update.message.text.lower()
@@ -40,6 +44,40 @@ def echo(update, context):
         update.message.reply_text('De nada')
     elif message in saludos:
         update.message.reply_text(f'Hola {user["first_name"]}')
+
+
+def search_identity(update: Update, context) -> int:
+
+    update.message.reply_text('Mandame el número de cédula')
+
+    return IDENTITY
+
+
+def identyti(update: Update, context):
+    user = update.message.from_user
+    # Responde con el mensaje anterior
+    # update.message.reply_text(update.message.text)
+
+    identyti_number = update.message.text
+
+    data = search_identity_number(identyti_number)
+
+    if data is not None:
+        update.message.reply_text(data)
+    else:
+        update.message.reply_text('No encontré datos')
+
+    return ConversationHandler.END
+
+
+def done(update: Update, context) -> int:
+    """Display the gathered info and end the conversation."""
+    user_data = context.user_data
+    if "choice" in user_data:
+        del user_data["choice"]
+
+    user_data.clear()
+    return ConversationHandler.END
 
 
 def export_files_r90(update, context):
@@ -172,6 +210,19 @@ def main():
         allconfig['TOKEN'], use_context=True)
 
     dp = updater.dispatcher
+
+    # Conversacion
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler("buscar_ci", search_identity)],
+        states={
+            IDENTITY: [
+                MessageHandler(Filters.regex("^\d*$"), identyti)
+            ],
+        },
+        fallbacks=[MessageHandler(Filters.regex("^Done$"), done)],
+    )
+
+    dp.add_handler(conv_handler)
 
     # los diferentes comandos para bot
     dp.add_handler(CommandHandler('start', start))
