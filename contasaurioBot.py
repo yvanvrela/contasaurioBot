@@ -29,7 +29,17 @@ def help_command(update, context):
 
 def echo(update, context):
     # Busca una palabra clave, y responde con un mensaje
-    update.message.reply_text("Entre en /ayuda para saber que hacer.")
+    chat_id = update.message.chat_id
+    message = update.message.text.lower()
+
+    saludos = ['hola', 'holaa']
+
+    user = update.message.from_user
+
+    if 'gracias' in message:
+        update.message.reply_text('De nada')
+    elif message in saludos:
+        update.message.reply_text(f'Hola {user["first_name"]}')
 
 
 def export_files_r90(update, context):
@@ -178,7 +188,7 @@ def main():
     dp.add_handler(CommandHandler('menu', menu))
     dp.add_handler(CommandHandler('export', export_files_r90))
 
-    # dp.add_handler(MessageHandler(Filters.text, echo))
+    dp.add_handler(MessageHandler(Filters.text, echo))
 
     # Handlers del Menu
     updater.dispatcher.add_handler(
