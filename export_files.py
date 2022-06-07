@@ -92,7 +92,7 @@ def read_file(path: str) -> list:
 
     if os.path.exists(path):
 
-        with open(path, 'r') as f:
+        with open(path, 'r', errors='ignore') as f:
 
             for line in f:
 

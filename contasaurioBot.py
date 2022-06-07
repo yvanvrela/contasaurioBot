@@ -54,9 +54,6 @@ def export_files_r90(update, context):
 
     if files:
 
-        context.bot.send_message(
-            chat_id=chat_id, text='Encontré estos archivos 📁')
-
         files_name = ''
         for file in files:
             file_name = re.findall('\w+.txt', file)
@@ -65,7 +62,7 @@ def export_files_r90(update, context):
             files_name += name.replace('.txt', '.xls') + '\n'
 
         context.bot.send_message(
-            chat_id=chat_id, text=files_name)
+            chat_id=chat_id, text=f'{files_name} \n  Encontré estos archivos 📁')
 
         for file in files:
 
@@ -78,13 +75,8 @@ def export_files_r90(update, context):
             delete_file(file)
 
         context.bot.send_message(
-            chat_id=chat_id, text='Formateando y exportando a zip ⚙️🔩🔧')
+            chat_id=chat_id, text='Ya los exporté a zip, listos para enviar 🦖')
 
-        context.bot.send_message(
-            chat_id=chat_id, text='Limpiando archivos innecesarios 🧹🧹')
-
-        context.bot.send_message(
-            chat_id=chat_id, text='Listo 🦖')
     else:
         context.bot.send_message(
             chat_id=chat_id, text='No hay archivos nuevos :(')
