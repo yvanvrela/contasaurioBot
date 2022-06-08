@@ -25,3 +25,4 @@ def search_identity_number(identity_number: str) -> str:
             return response
     except:
         print('error')
+

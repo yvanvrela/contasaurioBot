@@ -67,7 +67,7 @@ def find_zip_url(url: str) -> list:
     return list_url_zip
 
 
-def read_file(path: str) -> None:
+def read_file(path: str) -> dict:
 
     contribuyentes = []
     with open(path, 'r', encoding='utf-8') as f:
@@ -101,7 +101,7 @@ def read_file(path: str) -> None:
     return contribuyentes
 
 
-def scan_files(file_extension='.txt', end_ruc=None) -> list:
+def scan_files(file_extension='.txt', end_ruc=None | str) -> list:
     path_rucs = PATH
 
     if end_ruc is not None:
@@ -135,26 +135,61 @@ def unzipping_files() -> None:
         delete_file(path)
 
 
-def search_contribuyente(ruc: str, data: list) -> dict:
+def search_contribuyente(ruc: str) -> dict | None:
+    """
+    Retorna un diccionario con los datos, si encuentra el ruc en los archivos
+    sino retorna un None.
+    Tambien puede discriminar guiones (-)
+    param: 12345-1 or 12345
+    return: dict
+    >>> search_contribuyente('12345')
+        {
+            'ci':'12345',
+            'fullname':'Juan Perez',
+            'ruc': '12345-1',
+        }
+    >>> search_contribuyente('12345')
+        None
+    """
 
     ruc_reference = ruc
 
     if '-' in ruc_reference:
 
+        # 12345-6 -> 5
+        end_ruc = re.findall('(\d-)', ruc_reference)[0]
+
+        path_data = scan_files(end_ruc=end_ruc)
+
+        data_contribuyentes = read_file(path_data)
+
         filtered_data = list(filter(
-            lambda contribuyente: contribuyente['ruc'] == ruc_reference, data))
+            lambda contribuyente: contribuyente['ruc'] == ruc_reference, data_contribuyentes))
 
-        contribuyente = dict(filtered_data[0])
+        if filtered_data:
+            contribuyente = dict(filtered_data[0])
 
-        return contribuyente
+            return contribuyente
+        else:
+            return None
     else:
 
+        # 12345 -> 5
+        end_ruc = re.findall('\d*(\d)', ruc_reference)[0]
+
+        path_data = scan_files(end_ruc=end_ruc)
+
+        data_contribuyentes = read_file(path_data)
+
         filtered_data = list(filter(
-            lambda contribuyente: contribuyente['ci'] == ruc_reference, data))
+            lambda contribuyente: contribuyente['ci'] == ruc_reference, data_contribuyentes))
 
-        contribuyente = dict(filtered_data[0])
+        if filtered_data:
+            contribuyente = dict(filtered_data[0])
 
-        return contribuyente
+            return contribuyente
+        else:
+            return None
 
 
 # urls_zip = find_zip_url(URL)
@@ -162,12 +197,10 @@ def search_contribuyente(ruc: str, data: list) -> dict:
 
 # unzipping_files()
 
-path_end_ruc = scan_files(end_ruc='0')
+ruc = '1235450'
 
-contribuyentes0 = read_file(path_end_ruc)
+contribuyente = search_contribuyente(ruc)
 
-ruc = ''
+if contribuyente is not None:
 
-contribuyente = search_contribuyente(ruc, contribuyentes0)
-
-print(contribuyente['fullname'])
+    print(contribuyente['fullname'])
