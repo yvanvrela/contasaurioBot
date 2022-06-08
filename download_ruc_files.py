@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import re
 import requests
 import zipfile
-from dataBase.postgre_service import all_contribuyentes, put_contribuyente
+from dataBase.postgre_service import all_contribuyentes, put_contribuyente0
 
 from export_files import delete_file
 
@@ -67,42 +67,63 @@ def find_zip_url(url: str) -> list:
     return list_url_zip
 
 
-def read_files(list_paths: str) -> None:
+def read_file(path: str) -> None:
 
-    print('Empezando a cargar los datos')
+    contribuyentes = []
+    with open(path, 'r', encoding='utf-8') as f:
 
-    for path in list_paths:
+        for line in f:
 
-        with open(path, 'r', encoding='utf-8') as f:
+            if not line.strip():
+                continue
 
-            for line in f:
+            data = line.split('|')
 
-                if not line.strip():
-                    continue
+            fullname = data[1]
 
-                data = line.split('|')
+            if ',' in fullname:
 
-                contribuyente = {
+                # -> (lastname, name)
+                list_fullname = fullname.split(',')
+
+                # -> 'name, lastname'
+                fullname = f'{list_fullname[1]}, {list_fullname[0]}'
+
+            contribuyentes.append(
+                {
                     'ci': data[0],
-                    'fullname': data[1],
+                    'fullname': fullname,
                     'dv': data[2],
-                    'ruc': f'{data[0]}-{data[2]}'
+                    'ruc': f'{data[0]}-{data[2]}',
                 }
+            )
 
-                put_contribuyente(contribuyente)
-
-        print('Se cargo uno mas...')
+    return contribuyentes
 
 
-def scan_files(file_extension='.txt') -> list:
-    ejemplo_dir = PATH
+def scan_files(file_extension='.txt', end_ruc=None) -> list:
+    path_rucs = PATH
 
-    with os.scandir(ejemplo_dir) as ficheros:
+    if end_ruc is not None:
 
-        files = [
-            f'{ejemplo_dir}/{fichero.name}' for fichero in ficheros if fichero.is_file() and fichero.name.endswith(file_extension)]
+        if end_ruc == '*':
+            with os.scandir(path_rucs) as ficheros:
+                files = [
+                    f'{path_rucs}/{fichero.name}' for fichero in ficheros if fichero.is_file() and fichero.name.endswith(file_extension)]
 
-    return files
+            return files
+        else:
+
+            filename = f'{path_rucs}/ruc{end_ruc}.txt'
+
+            return filename
+    else:
+
+        with os.scandir(path_rucs) as ficheros:
+            files = [
+                f'{path_rucs}/{fichero.name}' for fichero in ficheros if fichero.is_file() and fichero.name.endswith(file_extension)]
+
+        return files
 
 
 def unzipping_files() -> None:
@@ -114,11 +135,39 @@ def unzipping_files() -> None:
         delete_file(path)
 
 
-urls_zip = find_zip_url(URL)
-download_zips(urls_zip)
+def search_contribuyente(ruc: str, data: list) -> dict:
 
-unzipping_files()
+    ruc_reference = ruc
 
-# files = scan_files()
+    if '-' in ruc_reference:
 
-# read_files(files)
+        filtered_data = list(filter(
+            lambda contribuyente: contribuyente['ruc'] == ruc_reference, data))
+
+        contribuyente = dict(filtered_data[0])
+
+        return contribuyente
+    else:
+
+        filtered_data = list(filter(
+            lambda contribuyente: contribuyente['ci'] == ruc_reference, data))
+
+        contribuyente = dict(filtered_data[0])
+
+        return contribuyente
+
+
+# urls_zip = find_zip_url(URL)
+# download_zips(urls_zip)
+
+# unzipping_files()
+
+path_end_ruc = scan_files(end_ruc='0')
+
+contribuyentes0 = read_file(path_end_ruc)
+
+ruc = ''
+
+contribuyente = search_contribuyente(ruc, contribuyentes0)
+
+print(contribuyente['fullname'])

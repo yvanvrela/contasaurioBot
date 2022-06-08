@@ -20,7 +20,7 @@ def conection_db():
     return conn
 
 
-def create_table() -> None:
+def create_tables() -> None:
     """ Crea la tabla en la base de datos,
         si aún no existe. Indicando la base de datos
         especifica.
@@ -45,12 +45,165 @@ def create_table() -> None:
         print(e)
 
 
-def put_contribuyente(data: dict) -> None:
+def put_contribuyente0(data: dict) -> None:
     try:
         conn = conection_db()
         cursor = conn.cursor()
 
-        cursor.execute(f"INSERT INTO contribuyentes (id, fullname, dv, ruc)\
+        cursor.execute(f"INSERT INTO contribuyentes0 (id, fullname, dv, ruc)\
+                VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
+
+        conn.commit()
+        conn.close()
+
+        return True
+    except Error as e:
+        conn.close()
+        print(e)
+
+
+def put_contribuyente1(data: dict) -> None:
+    try:
+        conn = conection_db()
+        cursor = conn.cursor()
+
+        cursor.execute(f"INSERT INTO contribuyentes1 (id, fullname, dv, ruc)\
+                VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
+
+        conn.commit()
+        conn.close()
+
+        return True
+    except Error as e:
+        conn.close()
+        print(e)
+
+
+def put_contribuyente2(data: dict) -> None:
+    try:
+        conn = conection_db()
+        cursor = conn.cursor()
+
+        cursor.execute(f"INSERT INTO contribuyentes2 (id, fullname, dv, ruc)\
+                VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
+
+        conn.commit()
+        conn.close()
+
+        return True
+    except Error as e:
+        conn.close()
+        print(e)
+
+
+def put_contribuyente3(data: dict) -> None:
+    try:
+        conn = conection_db()
+        cursor = conn.cursor()
+
+        cursor.execute(f"INSERT INTO contribuyentes3 (id, fullname, dv, ruc)\
+                VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
+
+        conn.commit()
+        conn.close()
+
+        return True
+    except Error as e:
+        conn.close()
+        print(e)
+
+
+def put_contribuyente4(data: dict) -> None:
+    try:
+        conn = conection_db()
+        cursor = conn.cursor()
+
+        cursor.execute(f"INSERT INTO contribuyentes4 (id, fullname, dv, ruc)\
+                VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
+
+        conn.commit()
+        conn.close()
+
+        return True
+    except Error as e:
+        conn.close()
+        print(e)
+
+
+def put_contribuyente5(data: dict) -> None:
+    try:
+        conn = conection_db()
+        cursor = conn.cursor()
+
+        cursor.execute(f"INSERT INTO contribuyentes5 (id, fullname, dv, ruc)\
+                VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
+
+        conn.commit()
+        conn.close()
+
+        return True
+    except Error as e:
+        conn.close()
+        print(e)
+
+
+def put_contribuyente6(data: dict) -> None:
+    try:
+        conn = conection_db()
+        cursor = conn.cursor()
+
+        cursor.execute(f"INSERT INTO contribuyentes6 (id, fullname, dv, ruc)\
+                VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
+
+        conn.commit()
+        conn.close()
+
+        return True
+    except Error as e:
+        conn.close()
+        print(e)
+
+
+def put_contribuyente7(data: dict) -> None:
+    try:
+        conn = conection_db()
+        cursor = conn.cursor()
+
+        cursor.execute(f"INSERT INTO contribuyentes7 (id, fullname, dv, ruc)\
+                VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
+
+        conn.commit()
+        conn.close()
+
+        return True
+    except Error as e:
+        conn.close()
+        print(e)
+
+
+def put_contribuyente8(data: dict) -> None:
+    try:
+        conn = conection_db()
+        cursor = conn.cursor()
+
+        cursor.execute(f"INSERT INTO contribuyentes8 (id, fullname, dv, ruc)\
+                VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
+
+        conn.commit()
+        conn.close()
+
+        return True
+    except Error as e:
+        conn.close()
+        print(e)
+
+
+def put_contribuyente9(data: dict) -> None:
+    try:
+        conn = conection_db()
+        cursor = conn.cursor()
+
+        cursor.execute(f"INSERT INTO contribuyentes9 (id, fullname, dv, ruc)\
                 VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
 
         conn.commit()

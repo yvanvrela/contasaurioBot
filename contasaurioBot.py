@@ -61,10 +61,13 @@ def identyti(update: Update, context):
 
     identyti_number = update.message.text
 
-    data = search_identity_number(identyti_number)
+    persona = search_identity_number(identyti_number)
 
-    if data is not None:
-        update.message.reply_text(data)
+    if persona is not None:
+
+        message = f'{persona["ci"]}\n{persona["fullname"]}'
+
+        update.message.reply_text(message)
     else:
         update.message.reply_text('No encontré datos')
 
