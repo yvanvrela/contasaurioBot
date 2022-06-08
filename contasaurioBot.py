@@ -100,7 +100,7 @@ def export_files_r90(update, context):
             files_name += name.replace('.txt', '.xls') + '\n'
 
         context.bot.send_message(
-            chat_id=chat_id, text=f'{files_name} \n  Encontré estos archivos 📁')
+            chat_id=chat_id, text=f'{files_name} \n  Encontré estos archivos')
 
         for file in files:
 
