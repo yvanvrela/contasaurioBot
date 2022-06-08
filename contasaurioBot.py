@@ -1,8 +1,8 @@
 import logging
+import os
 import re
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, ContextTypes, ConversationHandler, filters
-from config import allconfig
 from export_files import xls_to_txt, scan_files, read_file, write_file, to_zip, delete_file
 from search_identity import search_identity_number
 
@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 # funcion para enviar el primer mensaje luego del /start
 
 
+TOKEN = os.environ['TOKEN']
 IDENTITY = 1
 
 
@@ -207,7 +208,7 @@ def responseOption(update, context):
 def main():
     """Inicia el bot con un TOKEN"""
     updater = Updater(
-        allconfig['TOKEN'], use_context=True)
+        TOKEN, use_context=True)
 
     dp = updater.dispatcher
 

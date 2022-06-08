@@ -1,6 +1,6 @@
 import os
 from bs4 import BeautifulSoup
-from msilib.schema import Error
+# from msilib.schema import Error
 import re
 import requests
 import zipfile
@@ -23,6 +23,7 @@ except AttributeError:
 
 def download_zips(url_list: list) -> zip:
     try:
+        print('Descargando archivos...')
         for url in url_list:
 
             page = requests.get(url)
@@ -30,16 +31,14 @@ def download_zips(url_list: list) -> zip:
             patron = '/(\w*).zip'
             ruc = re.findall(patron, url)[0]
 
-            print(f'Descargando el archivo {ruc}.zip')
-
             filename = f'{PATH}/{ruc}.zip'
 
             with open(filename, 'wb') as output_file:
                 output_file.write(page.content)
 
         print('Descarga completada')
-    except Error as e:
-        print(e)
+    except:
+        print('error')
 
 
 def find_zip_url(url: str) -> list:
@@ -115,11 +114,11 @@ def unzipping_files() -> None:
         delete_file(path)
 
 
-# urls_zip = find_zip_url(URL)
-# download_zips(urls_zip)
+urls_zip = find_zip_url(URL)
+download_zips(urls_zip)
 
 unzipping_files()
 
-files = scan_files()
+# files = scan_files()
 
-read_files(files)
+# read_files(files)

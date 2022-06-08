@@ -1,4 +1,4 @@
-from msilib.schema import Error
+# from msilib.schema import
 import requests
 
 
@@ -24,5 +24,5 @@ def search_identity_number(identity_number: str) -> str:
                 \n{data['Nombre']}"
         else:
             return response
-    except Error as e:
-        print(e)
+    except:
+        print('error')

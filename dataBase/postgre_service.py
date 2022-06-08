@@ -30,12 +30,15 @@ def create_table() -> None:
         conn = conection_db()
         cursor = conn.cursor()
 
-        cursor.execute("""CREATE TABLE IF NOT EXISTS contribuyentes (
-                id	 INT PRIMARY KEY NOT NULL,
-                fullname	VARCHAR(255) UNIQUE NOT NULL,
-                dv VARCHAR(10) NOT NULL,
-                ruc VARCHAR(255) NOT NULL
-            );""")
+        for end_ruc in range(10):
+
+            cursor.execute(f"""CREATE TABLE IF NOT EXISTS contribuyentes{end_ruc} (
+                    id	 INT PRIMARY KEY NOT NULL,
+                    fullname	VARCHAR(255) UNIQUE NOT NULL,
+                    dv VARCHAR(10) NOT NULL,
+                    ruc VARCHAR(255) NOT NULL
+                );""")
+
         conn.commit()
         conn.close()
     except Error as e:
