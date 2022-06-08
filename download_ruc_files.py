@@ -4,6 +4,7 @@ from msilib.schema import Error
 import re
 import requests
 import zipfile
+from dataBase.postgre_service import put_contribuyente
 
 from export_files import delete_file
 
@@ -83,10 +84,12 @@ def read_files(list_paths: str) -> list:
 
                 contribuyente = {
                     'ci': data[0],
-                    'full_name': data[1],
+                    'fullname': data[1],
                     'dv': data[2],
                     'ruc': f'{data[0]}-{data[2]}'
                 }
+
+                put_contribuyente(data)
 
         return contribuyente
 
