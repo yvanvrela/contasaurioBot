@@ -4,7 +4,7 @@ from msilib.schema import Error
 import re
 import requests
 import zipfile
-from dataBase.postgre_service import put_contribuyente
+from dataBase.postgre_service import all_contribuyentes, put_contribuyente
 
 from export_files import delete_file
 
@@ -68,12 +68,13 @@ def find_zip_url(url: str) -> list:
     return list_url_zip
 
 
-def read_files(list_paths: str) -> list:
+def read_files(list_paths: str) -> None:
 
-    content = []
+    print('Empezando a cargar los datos')
+
     for path in list_paths:
 
-        with open(path, 'r', errors='ignore') as f:
+        with open(path, 'r', encoding='utf-8') as f:
 
             for line in f:
 
@@ -89,9 +90,9 @@ def read_files(list_paths: str) -> list:
                     'ruc': f'{data[0]}-{data[2]}'
                 }
 
-                put_contribuyente(data)
+                put_contribuyente(contribuyente)
 
-        return contribuyente
+        print('Se cargo uno mas...')
 
 
 def scan_files(file_extension='.txt') -> list:
@@ -114,5 +115,11 @@ def unzipping_files() -> None:
         delete_file(path)
 
 
-paths = scan_files()
-print(read_files(paths))
+# urls_zip = find_zip_url(URL)
+# download_zips(urls_zip)
+
+unzipping_files()
+
+files = scan_files()
+
+read_files(files)

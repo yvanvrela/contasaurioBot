@@ -51,6 +51,26 @@ def put_contribuyente(data: dict) -> None:
                 VALUES('{data['ci']}', '{data['fullname']}', '{data['dv']}', '{data['ruc']}')")
 
         conn.commit()
+        conn.close()
+
+        return True
+    except Error as e:
+        conn.close()
+        print(e)
+
+
+def all_contribuyentes() -> tuple:
+    try:
+        conn = conection_db()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM contribuyentes")
+        data = cursor.fetchall()
+
+        conn.commit()
+        conn.close()
+
+        return data
     except Error as e:
         conn.close()
         print(e)
