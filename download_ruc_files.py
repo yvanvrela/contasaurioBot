@@ -21,9 +21,13 @@ except AttributeError:
     pass
 
 
-def download_zips(url_list: list) -> zip:
+def download_zips() -> zip:
     try:
+
+        url_list = find_zip_url()
+
         print('Descargando archivos...')
+
         for url in url_list:
 
             page = requests.get(url)
@@ -37,11 +41,21 @@ def download_zips(url_list: list) -> zip:
                 output_file.write(page.content)
 
         print('Descarga completada')
-    except:
-        print('error')
+    except AttributeError as e:
+        print(e)
 
 
 def find_zip_url(url: str) -> list:
+    """
+        Busca los url's de los archivos en la página de la SET,
+        los extrae y los agrega en una lista.
+        :param url
+        :return lista con los links.
+        >>> find_zip_url('https://www.set.gov.py')
+        ['https://www.set.gov.py/ruc0.zip','https://...ruc1.zip','https://...ruc1.zip']
+
+
+    """
 
     page_ruc = requests.get(url)
 
@@ -67,9 +81,10 @@ def find_zip_url(url: str) -> list:
     return list_url_zip
 
 
-def read_file(path: str) -> dict:
+def read_file(path: str) -> list:
 
     contribuyentes = []
+
     with open(path, 'r', encoding='utf-8') as f:
 
         for line in f:
@@ -87,7 +102,7 @@ def read_file(path: str) -> dict:
                 list_fullname = fullname.split(',')
 
                 # -> 'name, lastname'
-                fullname = f'{list_fullname[1]}, {list_fullname[0]}'
+                fullname = f'{list_fullname[1].strip()}, {list_fullname[0]}'
 
             contribuyentes.append(
                 {
@@ -101,7 +116,7 @@ def read_file(path: str) -> dict:
     return contribuyentes
 
 
-def scan_files(file_extension='.txt', end_ruc=None | str) -> list:
+def scan_files(file_extension='.txt', end_ruc=None) -> list | str:
     path_rucs = PATH
 
     if end_ruc is not None:
@@ -128,79 +143,9 @@ def scan_files(file_extension='.txt', end_ruc=None | str) -> list:
 
 def unzipping_files() -> None:
     paths_zip = scan_files('.zip')
+
     for path in paths_zip:
         with zipfile.ZipFile(path, 'r') as zip_reference:
             zip_reference.extractall(PATH)
 
         delete_file(path)
-
-
-def search_contribuyente(ruc: str) -> dict | None:
-    """
-    Retorna un diccionario con los datos, si encuentra el ruc en los archivos
-    sino retorna un None.
-    Tambien puede discriminar guiones (-)
-    param: 12345-1 or 12345
-    return: dict
-    >>> search_contribuyente('12345')
-        {
-            'ci':'12345',
-            'fullname':'Juan Perez',
-            'ruc': '12345-1',
-        }
-    >>> search_contribuyente('12345')
-        None
-    """
-
-    ruc_reference = ruc
-
-    if '-' in ruc_reference:
-
-        # 12345-6 -> 5
-        end_ruc = re.findall('(\d-)', ruc_reference)[0]
-
-        path_data = scan_files(end_ruc=end_ruc)
-
-        data_contribuyentes = read_file(path_data)
-
-        filtered_data = list(filter(
-            lambda contribuyente: contribuyente['ruc'] == ruc_reference, data_contribuyentes))
-
-        if filtered_data:
-            contribuyente = dict(filtered_data[0])
-
-            return contribuyente
-        else:
-            return None
-    else:
-
-        # 12345 -> 5
-        end_ruc = re.findall('\d*(\d)', ruc_reference)[0]
-
-        path_data = scan_files(end_ruc=end_ruc)
-
-        data_contribuyentes = read_file(path_data)
-
-        filtered_data = list(filter(
-            lambda contribuyente: contribuyente['ci'] == ruc_reference, data_contribuyentes))
-
-        if filtered_data:
-            contribuyente = dict(filtered_data[0])
-
-            return contribuyente
-        else:
-            return None
-
-
-# urls_zip = find_zip_url(URL)
-# download_zips(urls_zip)
-
-# unzipping_files()
-
-ruc = '1235450'
-
-contribuyente = search_contribuyente(ruc)
-
-if contribuyente is not None:
-
-    print(contribuyente['fullname'])

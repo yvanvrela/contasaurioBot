@@ -4,7 +4,7 @@ import re
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, ContextTypes, ConversationHandler, filters
 from export_files import xls_to_txt, scan_files, read_file, write_file, to_zip, delete_file
-from search_identity import search_identity_number
+from search_identity import find_identity_data, search_identity_number
 
 
 # Iniciar Loggin
@@ -54,22 +54,17 @@ def search_identity(update: Update, context) -> int:
     return IDENTITY
 
 
-def identyti(update: Update, context):
+def identity(update: Update, context):
     user = update.message.from_user
     # Responde con el mensaje anterior
     # update.message.reply_text(update.message.text)
 
-    identyti_number = update.message.text
+    identity_number = update.message.text
 
-    persona = search_identity_number(identyti_number)
 
-    if persona is not None:
+    message_person_data = find_identity_data(identity_number)
 
-        message = f'{persona["ci"]}\n{persona["fullname"]}'
-
-        update.message.reply_text(message)
-    else:
-        update.message.reply_text('No encontré datos')
+    update.message.reply_text(message_person_data)
 
     return ConversationHandler.END
 
@@ -220,7 +215,7 @@ def main():
         entry_points=[CommandHandler("buscar_ci", search_identity)],
         states={
             IDENTITY: [
-                MessageHandler(Filters.regex("^\d*$"), identyti)
+                MessageHandler(Filters.regex("^[\d,-]*$"), identity)
             ],
         },
         fallbacks=[MessageHandler(Filters.regex("^Done$"), done)],
