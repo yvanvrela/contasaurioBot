@@ -1,5 +1,6 @@
 import logging
 import os
+from random import randint
 import re
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, ContextTypes, ConversationHandler, filters
@@ -29,7 +30,27 @@ def start(update, context):
 def help_command(update, context):
     """Lista de Funciones"""
     update.message.reply_text(
-        'Funciones para el control de los Clientes. \n\n /nuevocliente - agregar cliente \n /listaclientes - ver todos los clientes \n\n Configuración de Clientes \n /agregartimbrado - agregar un nuevo timbrado \n /recepciondocumentos - resive los documentos \n /retirodocumentos - nose \n /colorcarpeta - agregar el color \n /export - exportar archivos de la R-90 \n\n Falta más funciones, pero aprendo rápido.')
+        """
+        Funciones para el control de los Clientes. 
+    /nuevocliente - agregar cliente 
+    /listaclientes - ver todos los clientes 
+
+    Configuración de Clientes 
+    /agregartimbrado - agregar un nuevo timbrado 
+    /recepciondocumentos - resive los documentos 
+    /retirodocumentos - nose 
+    /colorcarpeta - agregar el color 
+    /export - exportar archivos de la R-90 
+    /buscarci - Busca el n° de documente en el RUC
+
+    Falta más funciones, pero aprendo rápido."""
+    )
+
+
+def msjAleatorio(listMsj: list) -> int:
+    endMsj = len(listMsj) - 1
+    positionMsj = randint(0, endMsj)
+    return positionMsj
 
 
 def echo(update: Update, context):
@@ -37,19 +58,89 @@ def echo(update: Update, context):
     chat_id = update.message.chat_id
     message = update.message.text.lower()
 
-    saludos = ['hola', 'holaa']
+    saludos = ['hola', 'holaa', 'hola benito', 'buendia benito', 'buen dia benito', 'buen día benito', 'buen dia', 'buen día'
+               'buenos días benito', 'buenos dias benito']
+
+    despedidas = ['bye', 'chau', 'chauu']
+
+    agradecimientos = ['gracias', 'gracias benito', 'graciaas']
+
+    nombres = ['benito', 'benitp', 'benitoo']
+
+    cumplidos = ['que crack', 'que grande', 'que pro']
+
+    regaños = ['benito asi no', 'benito así no',
+               'asi no benito', 'así no benito', 'benito vos no', 'vos no benito', 'benito malo', 'que malo benito']
+
+    preguntas_quehacer = ['que haces', 'qué haces', 'qué haces benito', 'benito, una consulta', 'benito una consulta'
+                          'qué haces benito?', 'qué haces?', 'que haces?']
+
+    afirmaciones = ['vd benito', 'verdad benito', 'vdd benito']
+
+    reply_saludos = ['Holaa 👋', 'Hola', 'Buenass', 'Buenos días Lic.'
+                     'Tengo sueño', 'Ola', 'Bien y vos']
+
+    reply_despedidas = ['Chauu 👋', 'Adios', 'Hasta luego', '👋', '👍']
+
+    reply_agradecimientos = ['👍', 'De nada', '👌']
+
+    reply_quehacer = ['Acá contando facturas',
+                      'Estoy contando bytes', 'Estoy contando números', 'Estoy aprendiendo a contar', 'Estoy estudiando sobre como responder']
+
+    reply_sentimientos = ['Muy bien!', 'Normal', 'Y practicamente existo']
+
+    reply_regaños = [':(', 'tristin', '😔', '😞', '😨', '🥲']
 
     user = update.message.from_user
+    chat_id = update.message.chat_id
 
-    if 'gracias' in message:
-        update.message.reply_text('De nada')
+    if message in agradecimientos:
+        message = reply_agradecimientos[msjAleatorio(reply_agradecimientos)]
+        update.message.reply_text(message)
+
+    elif message in cumplidos:
+        message = 'Claro'
+        update.message.reply_text(message)
+
+    elif message in regaños:
+        message = reply_regaños[msjAleatorio(reply_regaños)]
+        update.message.reply_text(message)
+
     elif message in saludos:
-        update.message.reply_text(f'Hola {user["first_name"]}')
+        message = reply_saludos[msjAleatorio(reply_saludos)]
+        update.message.reply_text(message)
+
+    elif message in nombres:
+        update.message.reply_text('Si?')
+
+    elif message == 'benitooo':
+        update.message.reply_text('QUEE!!!')
+
+    elif message in preguntas_quehacer:
+        message = reply_quehacer[msjAleatorio(reply_quehacer)]
+        update.message.reply_text(message)
+
+    elif message in afirmaciones:
+        reply = 'Sii'
+        context.bot.send_message(
+            chat_id=chat_id, text=reply)
+
+    elif despedidas in message:
+        message = reply_despedidas[msjAleatorio(reply_despedidas)]
+        update.message.reply_text(message)
+
+    if 'jaja' in message:
+        context.bot.send_message(chat_id=chat_id, text=message.capitalize())
+
+    if 'chaa' in message:
+        reply = message.capitalize()
+        context.bot.send_message(
+            chat_id=chat_id, text=reply)
 
 
 def search_identity(update: Update, context) -> int:
 
-    update.message.reply_text('Mandame el número de cédula')
+    update.message.reply_text('Mandame el número de documento')
 
     return IDENTITY
 
@@ -60,7 +151,6 @@ def identity(update: Update, context):
     # update.message.reply_text(update.message.text)
 
     identity_number = update.message.text
-
 
     message_person_data = find_identity_data(identity_number)
 
@@ -212,7 +302,7 @@ def main():
 
     # Conversacion
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler("buscar_ci", search_identity)],
+        entry_points=[CommandHandler("buscarci", search_identity)],
         states={
             IDENTITY: [
                 MessageHandler(Filters.regex("^[\d,-]*$"), identity)
