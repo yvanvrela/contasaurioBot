@@ -24,7 +24,7 @@ except AttributeError:
 def download_zips() -> zip:
     try:
 
-        url_list = find_zip_url()
+        url_list = find_zip_url(URL)
 
         print('Descargando archivos...')
 

@@ -58,7 +58,7 @@ def echo(update: Update, context):
     chat_id = update.message.chat_id
     message = update.message.text.lower()
 
-    saludos = ['hola', 'holaa', 'hola benito', 'buendia benito', 'buen dia benito', 'buen día benito', 'buen dia', 'buen día'
+    saludos = ['hola', 'holaa', 'hola benito', 'buendia benito', 'buen dia benito', 'buen día benito', 'buen dia', 'buen día',
                'buenos días benito', 'buenos dias benito']
 
     despedidas = ['bye', 'chau', 'chauu']
@@ -72,12 +72,14 @@ def echo(update: Update, context):
     regaños = ['benito asi no', 'benito así no',
                'asi no benito', 'así no benito', 'benito vos no', 'vos no benito', 'benito malo', 'que malo benito']
 
-    preguntas_quehacer = ['que haces', 'qué haces', 'qué haces benito', 'benito, una consulta', 'benito una consulta'
-                          'qué haces benito?', 'qué haces?', 'que haces?']
+    preguntas_quehacer = ['que haces', 'qué haces', 'qué haces benito', 'que haces benito',
+                          'qué haces benito?', 'que haces benito?', 'qué haces?', 'que haces?']
+
+    consultas = []
 
     afirmaciones = ['vd benito', 'verdad benito', 'vdd benito']
 
-    reply_saludos = ['Holaa 👋', 'Hola', 'Buenass', 'Buenos días Lic.'
+    reply_saludos = ['Holaa 👋', 'Hola', 'Buenass', 'Buenos días Lic.',
                      'Tengo sueño', 'Ola', 'Bien y vos']
 
     reply_despedidas = ['Chauu 👋', 'Adios', 'Hasta luego', '👋', '👍']
@@ -125,7 +127,7 @@ def echo(update: Update, context):
         context.bot.send_message(
             chat_id=chat_id, text=reply)
 
-    elif despedidas in message:
+    elif message in despedidas:
         message = reply_despedidas[msjAleatorio(reply_despedidas)]
         update.message.reply_text(message)
 
@@ -155,8 +157,6 @@ def identity(update: Update, context):
     message_person_data = find_identity_data(identity_number)
 
     update.message.reply_text(message_person_data)
-
-    return ConversationHandler.END
 
 
 def done(update: Update, context) -> int:
@@ -308,7 +308,7 @@ def main():
                 MessageHandler(Filters.regex("^[\d,-]*$"), identity)
             ],
         },
-        fallbacks=[MessageHandler(Filters.regex("^Done$"), done)],
+        fallbacks=[MessageHandler(Filters.regex("^opa$"), done)],
     )
 
     dp.add_handler(conv_handler)
