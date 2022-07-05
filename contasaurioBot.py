@@ -142,7 +142,8 @@ def echo(update: Update, context):
 
 def search_identity(update: Update, context) -> int:
 
-    update.message.reply_text('Mandame el número de documento')
+    update.message.reply_text(
+        'Mandame el número de documento: \n\n envia "Listo" cuando termines las consultas.')
 
     return IDENTITY
 
@@ -165,6 +166,7 @@ def done(update: Update, context) -> int:
     if "choice" in user_data:
         del user_data["choice"]
 
+    update.message.reply_text('Oc')
     user_data.clear()
     return ConversationHandler.END
 
@@ -308,7 +310,7 @@ def main():
                 MessageHandler(Filters.regex("^[\d,-]*$"), identity)
             ],
         },
-        fallbacks=[MessageHandler(Filters.regex("^opa$"), done)],
+        fallbacks=[MessageHandler(Filters.regex("^Listo$"), done)],
     )
 
     dp.add_handler(conv_handler)
