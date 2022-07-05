@@ -26,8 +26,6 @@ def download_zips() -> zip:
 
         url_list = find_zip_url(URL)
 
-        print('Descargando archivos...')
-
         for url in url_list:
 
             page = requests.get(url)
@@ -39,8 +37,6 @@ def download_zips() -> zip:
 
             with open(filename, 'wb') as output_file:
                 output_file.write(page.content)
-
-        print('Descarga completada')
     except AttributeError as e:
         print(e)
 

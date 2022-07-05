@@ -4,6 +4,7 @@ from random import randint
 import re
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, ContextTypes, ConversationHandler, filters
+from download_ruc_files import download_zips, unzipping_files, scan_files
 from export_files import xls_to_txt, scan_files, read_file, write_file, to_zip, delete_file
 from search_identity import find_identity_data, search_identity_number
 
@@ -210,6 +211,19 @@ def export_files_r90(update, context):
         context.bot.send_message(
             chat_id=chat_id, text='No hay archivos nuevos :(')
 
+
+def run_download_ruc(update, context):
+    chat_id = update.message.chat_id
+
+    update.message.reply_text("Descargando archivos...")
+    download_zips()
+
+    files = scan_files('.zip')
+    if files is not None:
+        unzipping_files()
+
+    update.message.reply_text("Ruc descargados")
+
 # Iniciar al Menú Principal
 
 
@@ -321,6 +335,7 @@ def main():
 
     dp.add_handler(CommandHandler('menu', menu))
     dp.add_handler(CommandHandler('export', export_files_r90))
+    dp.add_handler(CommandHandler('downloadruc', run_download_ruc))
 
     dp.add_handler(MessageHandler(Filters.text, echo))
 
